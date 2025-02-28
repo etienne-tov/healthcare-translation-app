@@ -18,6 +18,20 @@
 .env.test.local
 .env.production.local
 
+
+# Environnements
+.env
+.env.local
+.env.development
+.env.production
+
+node_modules/
+
+.DS_Store
+.idea/
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.env
+node_modules/
