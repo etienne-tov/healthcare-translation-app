@@ -150,9 +150,9 @@ function App() {
   };
   
   // Handle specialty change
-  const handleSpecialtyChange = (specialty) => {
-    setMedicalSpecialty(specialty);
-  };
+  // const handleSpecialtyChange = (specialty) => {
+  //   setMedicalSpecialty(specialty);
+  // };
   
   return (
     <div className="app-container">
@@ -164,7 +164,7 @@ function App() {
       {isOffline && <OfflineNotice />}
       
       <main>
-        <div className="toolbar">
+        {/* <div className="toolbar">
           <button 
             className="history-button" 
             onClick={() => setIsHistoryModalOpen(true)}
@@ -185,7 +185,7 @@ function App() {
               <option value="psychiatry">Psychiatry</option>
             </select>
           </div>
-        </div>
+        </div> */}
         
         <div className="language-controls">
           <LanguageSelector 
