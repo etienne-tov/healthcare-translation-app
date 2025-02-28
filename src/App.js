@@ -164,14 +164,14 @@ function App() {
       {isOffline && <OfflineNotice />}
       
       <main>
-        {/* <div className="toolbar">
+        <div className="toolbar">
           <button 
             className="history-button" 
             onClick={() => setIsHistoryModalOpen(true)}
           >
             View History
           </button>
-          <div className="specialty-selector">
+          {/* <div className="specialty-selector">
             <label>Medical Specialty:</label>
             <select
               value={medicalSpecialty}
@@ -184,8 +184,8 @@ function App() {
               <option value="pediatrics">Pediatrics</option>
               <option value="psychiatry">Psychiatry</option>
             </select>
-          </div>
-        </div> */}
+          </div> */}
+        </div>
         
         <div className="language-controls">
           <LanguageSelector 
