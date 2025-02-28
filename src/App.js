@@ -24,8 +24,6 @@ function App() {
   const [medicalSpecialty, setMedicalSpecialty] = useState('general');
   
   const recognitionRef = useRef(null);
-  const translationTimeoutRef = useRef(null);
-  const lastProcessedTextRef = useRef('');
   
   // Check online status
   useEffect(() => {
@@ -41,9 +39,6 @@ function App() {
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
-      if (translationTimeoutRef.current) {
-        clearTimeout(translationTimeoutRef.current);
-      }
     };
   }, []);
   
@@ -69,29 +64,9 @@ function App() {
         
         setOriginalTranscript(transcript);
         
-        // Clear any pending timeout for processing
-        if (translationTimeoutRef.current) {
-          clearTimeout(translationTimeoutRef.current);
-        }
-        
-        // Only schedule processing if we have final results and we're online
-        if (!isOffline) {
-          // Set a timeout to process after speech has paused
-          translationTimeoutRef.current = setTimeout(() => {
-            // Only process if the text is different from the last processed text
-            if (transcript && transcript !== lastProcessedTextRef.current) {
-              processTranscription(transcript);
-              lastProcessedTextRef.current = transcript;
-            }
-          }, 2000); // Wait 2 seconds of silence before processing
-        }
-      };
-      
-      recognitionRef.current.onend = () => {
-        // When recognition ends, process the final transcript if needed
-        if (originalTranscript && originalTranscript !== lastProcessedTextRef.current && !isOffline) {
-          processTranscription(originalTranscript);
-          lastProcessedTextRef.current = originalTranscript;
+        // Only call the AI enhancement for final results to avoid excessive API calls
+        if (event.results[0].isFinal && !isOffline) {
+          processTranscription(transcript);
         }
       };
       
@@ -108,11 +83,8 @@ function App() {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
-      if (translationTimeoutRef.current) {
-        clearTimeout(translationTimeoutRef.current);
-      }
     };
-  }, [sourceLanguage, targetLanguage, isOffline, medicalSpecialty, originalTranscript]);
+  }, [sourceLanguage, targetLanguage, isOffline, medicalSpecialty]);
   
   // Process transcription with enhancement and translation
   const processTranscription = async (transcript) => {
@@ -153,15 +125,8 @@ function App() {
     if (isListening) {
       recognitionRef.current.stop();
       setIsListening(false);
-      
-      // Process the final transcript when stopping
-      if (originalTranscript && originalTranscript !== lastProcessedTextRef.current && !isOffline) {
-        processTranscription(originalTranscript);
-        lastProcessedTextRef.current = originalTranscript;
-      }
     } else {
       setError(null);
-      lastProcessedTextRef.current = ''; // Reset the last processed text
       recognitionRef.current.lang = sourceLanguage;
       recognitionRef.current.start();
       setIsListening(true);
@@ -173,7 +138,6 @@ function App() {
     setOriginalTranscript('');
     setTranslatedTranscript('');
     setError(null);
-    lastProcessedTextRef.current = '';
   };
   
   // Select a history item for display
